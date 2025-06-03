@@ -578,9 +578,9 @@ public class JdepsConfiguration implements AutoCloseable {
             for (String p : cpaths.split(File.pathSeparator)) {
                 if (p.length() > 0) {
                     // wildcard to parse all JAR files e.g. -classpath dir/*
-                    int i = lastIndex(p, ".\\*");
+                    int i = p.lastIndexOf("*");
                     if (i > 0) {
-                        Path dir = Paths.get(p.substring(0, i));
+                        Path dir = Paths.get(p.substring(0, i - 1));
                         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*.jar")) {
                             for (Path entry : stream) {
                                 paths.add(entry);
@@ -594,14 +594,6 @@ public class JdepsConfiguration implements AutoCloseable {
                 }
             }
             return paths;
-        }
-
-        private int lastIndex(String str, String regex) {
-            String splitted[] = (str + " ").split(regex);
-            if (splitted.length == 0 || splitted.length == 1) {
-                return -1;
-            }
-            return str.length() - 1 - splitted[splitted.length - 1].length();
         }
     }
 
